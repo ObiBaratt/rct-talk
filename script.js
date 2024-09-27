@@ -1,3 +1,52 @@
+function sayHi() {
+  console.log("Hello, World!");
+  alert("Hello, World!");
+}
+
+function getHiddenImgs() {
+  const hiddenImgs = document.getElementsByClassName("section-image");
+  return Array.from(hiddenImgs);
+}
+
+function removeClass(element, className) {
+  element.classList.remove(className);
+}
+
+function removeClassFromElements(elements, className) {
+  elements.forEach((element) => {
+    removeClass(element, className);
+  });
+}
+
+function addClassToElement(element, className) {
+  element.classList.add(className);
+}
+
+function addClassToElements(elements, className) {
+  elements.forEach((element) => {
+    addClassToElement(element, className);
+  });
+}
+
+function getCurrentSelection() {
+  const selection = window.getSelection();
+  const range = selection.getRangeAt(0);
+
+  return range;
+}
+
+function createElementAtPosition(position, element) {
+  position.insertNode(element);
+}
+
+function createNewElement(elementType) {
+  return document.createElement(elementType);
+}
+
+function appendElementToElement(element, elementToAppend) {
+  element.appendChild(elementToAppend);
+}
+
 const slideableContent = document.getElementById("slideable-content");
 const toggleButton = document.getElementById("toggle-button");
 
@@ -59,53 +108,4 @@ function fadeToggle(element, duration = 300) {
       }
     }, duration / 10);
   }
-}
-
-function sayHi() {
-  console.log("Hello, World!");
-  alert("Hello, World!");
-}
-
-function getHiddenImgs() {
-  const hiddenImgs = document.getElementsByClassName("section-image");
-  return Array.from(hiddenImgs);
-}
-
-function removeClass(element, className) {
-  element.classList.remove(className);
-}
-
-function removeClassFromElements(elements, className) {
-  elements.forEach((element) => {
-    removeClass(element, className);
-  });
-}
-
-function addClassToElement(element, className) {
-  element.classList.add(className);
-}
-
-function addClassToElements(elements, className) {
-  elements.forEach((element) => {
-    addClassToElement(element, className);
-  });
-}
-
-function getCurrentSelection() {
-  const selection = window.getSelection();
-  const range = selection.getRangeAt(0);
-
-  return range;
-}
-
-function createElementAtPosition(position, element) {
-  position.insertNode(element);
-}
-
-function createNewElement(elementType) {
-  return document.createElement(elementType);
-}
-
-function appendElementToElement(element, elementToAppend) {
-  element.appendChild(elementToAppend);
 }
