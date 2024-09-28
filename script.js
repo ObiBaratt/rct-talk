@@ -3,6 +3,40 @@ function sayHi() {
   alert("Hello, World!");
 }
 
+function getFirstElementByText(text, caseSensitive = true) {
+  // returns element or null
+  const allElements = document.querySelectorAll("*");
+  if (caseSensitive) {
+    return allElements.find((element) => element.textContent.trim() === text);
+  } else {
+    return allElements.find(
+      (element) =>
+        element.textContent.trim().toLowerCase() === text.toLowerCase()
+    );
+  }
+}
+
+function getAllElementsThatIncludeText(text, caseSenitive = true) {
+  const allElements = document.querySelectorAll("*");
+  const elements = [];
+  for (const element of allElements) {
+    if (element.children.length > 0) {
+      continue;
+    }
+
+    if (caseSenitive) {
+      if (element.textContent.trim().includes(text)) {
+        elements.push(element);
+      }
+    } else if (
+      element.textContent.trim().toLowerCase().includes(text.toLowerCase())
+    ) {
+      elements.push(element);
+    }
+  }
+  return elements;
+}
+
 function getHiddenImgs() {
   const hiddenImgs = document.getElementsByClassName("section-image");
   return Array.from(hiddenImgs);
@@ -82,23 +116,18 @@ document.addEventListener("click", (event) => {
 });
 
 function fadeToggle(element, duration = 300) {
-  // Default duration is 300ms
   if (element.style.opacity === "1" || element.style.opacity === "") {
-    // Element is visible
-    // Fade out
     let opacity = 1;
     const fadeOutInterval = setInterval(() => {
       opacity -= 0.1;
       element.style.opacity = opacity;
       if (opacity <= 0) {
         clearInterval(fadeOutInterval);
-        element.style.display = "none"; // Hide the element after fade out
+        element.style.display = "none";
       }
-    }, duration / 10); // Adjust interval for smoother transition
+    }, duration / 10);
   } else {
-    // Element is hidden
-    // Fade in
-    element.style.display = "block"; // Make the element visible
+    element.style.display = "block";
     let opacity = 0;
     const fadeInInterval = setInterval(() => {
       opacity += 0.1;
@@ -109,3 +138,21 @@ function fadeToggle(element, duration = 300) {
     }, duration / 10);
   }
 }
+
+function fade(element, duration = 500) {
+  const isVisible =
+    element.style.opacity === "1" || element.style.opacity === "";
+  element.style.transition = `opacity ${duration}ms ease`;
+  if (isVisible) {
+    element.style.opacity = 0;
+    setTimeout(() => {
+      element.style.display = "none";
+    }, duration);
+  } else {
+    element.style.display = "block";
+    element.offsetWidth;
+    element.style.opacity = 1;
+  }
+}
+
+const tasks = getAllElementsThatIncludeText("task", false);
