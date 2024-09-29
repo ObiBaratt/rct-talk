@@ -1,7 +1,6 @@
-function sayHi() {
-  console.log("Hello, World!");
-  alert("Hello, World!");
-}
+const tasks = getAllElementsThatIncludeText("task", false);
+const slideableContent = document.getElementById("slideable-content");
+const toggleButton = document.getElementById("toggle-button");
 
 function getFirstElementByText(text, caseSensitive = true) {
   // returns element or null
@@ -81,9 +80,6 @@ function appendElementToElement(element, elementToAppend) {
   element.appendChild(elementToAppend);
 }
 
-const slideableContent = document.getElementById("slideable-content");
-const toggleButton = document.getElementById("toggle-button");
-
 toggleButton.addEventListener("click", () => {
   if (slideableContent.classList.contains("hidden")) {
     slideableContent.classList.remove("hidden");
@@ -115,30 +111,6 @@ document.addEventListener("click", (event) => {
   }
 });
 
-function fadeToggle(element, duration = 300) {
-  if (element.style.opacity === "1" || element.style.opacity === "") {
-    let opacity = 1;
-    const fadeOutInterval = setInterval(() => {
-      opacity -= 0.1;
-      element.style.opacity = opacity;
-      if (opacity <= 0) {
-        clearInterval(fadeOutInterval);
-        element.style.display = "none";
-      }
-    }, duration / 10);
-  } else {
-    element.style.display = "block";
-    let opacity = 0;
-    const fadeInInterval = setInterval(() => {
-      opacity += 0.1;
-      element.style.opacity = opacity;
-      if (opacity >= 1) {
-        clearInterval(fadeInInterval);
-      }
-    }, duration / 10);
-  }
-}
-
 function fade(element, duration = 500) {
   const isVisible =
     element.style.opacity === "1" || element.style.opacity === "";
@@ -167,4 +139,83 @@ function fade(element, duration = 500) {
   }
 }
 
-const tasks = getAllElementsThatIncludeText("task", false);
+function slide(element, direction = "right", dim = true) {
+  const validDirections = ["left", "right", "top", "bottom"];
+  if (!validDirections.includes(direction)) {
+    console.error("Invalid direction. Choose from: left, right, top, bottom");
+    return;
+  }
+
+  element.style.transform = getHiddenTransform(direction);
+  element.classList.remove("panelHidden");
+  element.classList.add(
+    `slideFrom${direction.charAt(0).toUpperCase() + direction.slice(1)}`
+  );
+
+  element.offsetHeight;
+
+  element.style.transition = "transform 0.3s ease-in-out";
+  element.style.transform = "translate(0, 0)";
+
+  let overlay;
+  if (dim) {
+    overlay = document.createElement("div");
+    overlay.className = "dimOverlay";
+    document.body.appendChild(overlay);
+    document.body.classList.add("overlayed");
+  }
+
+  const reverseSlide = () => {
+    element.style.transform = getHiddenTransform(direction);
+
+    element.addEventListener(
+      "transitionend",
+      () => {
+        element.classList.add("panelHidden");
+        element.classList.remove(
+          `slideFrom${direction.charAt(0).toUpperCase() + direction.slice(1)}`
+        );
+        element.style.transform = "";
+        element.style.transition = "";
+        if (overlay) {
+          overlay.remove();
+          document.body.classList.remove("overlayed");
+        }
+      },
+      { once: true }
+    );
+  };
+
+  const handleClickOutside = (event) => {
+    if (!element.contains(event.target)) {
+      reverseSlide();
+      document.removeEventListener("click", handleClickOutside);
+    }
+  };
+
+  // Need to delay or the initial click triggers
+  setTimeout(() => {
+    document.addEventListener("click", handleClickOutside);
+  }, 50);
+}
+
+function getHiddenTransform(direction) {
+  switch (direction) {
+    case "left":
+      return "translateX(-100%)";
+    case "right":
+      return "translateX(100%)";
+    case "top":
+      return "translateY(-100%)";
+    case "bottom":
+      return "translateY(100%)";
+  }
+}
+
+
+const slideToggleButton = document.getElementById("slideToggleButton");
+const slideablePanel = document.getElementById("slideablePanel");
+
+slideToggleButton.addEventListener("click", () => {
+  slidez(slideablePanel, "left", true);
+});
